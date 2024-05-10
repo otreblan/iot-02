@@ -1,3 +1,5 @@
+#include <LiquidCrystal.h>
+
 #include <hcsr04.h>
 #include <Keypad.h>
 
@@ -24,6 +26,8 @@ Keypad kpd = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
 HCSR04 hcsr04(51, 53, 20, 4000);
 
+LiquidCrystal lcd(21, 20, 19,18,17,16,15,14, 2,3);
+
 int password_buffer = 0;
 int correct_password = 1234;
 
@@ -37,9 +41,11 @@ void check_password(int password){
     digitalWrite(red_led, LOW);
     digitalWrite(green_led, HIGH);
     // TODO: screen feedback
+    lcd.print("hello, world!");
   }
   else {
     // TODO: reset screen
+    lcd.print("hello, world!");
     digitalWrite(green_led, LOW);
     digitalWrite(red_led, HIGH);
   }
@@ -93,6 +99,7 @@ void setup() {
 
   kpd.addEventListener(keypadEvent);
   interrupts();
+  lcd.begin(16,2);
 }
 
 void area_detection(int distance_mm){
