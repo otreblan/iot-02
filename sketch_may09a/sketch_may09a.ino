@@ -58,14 +58,17 @@ void check_password(int password){
   }
 }
 
+void resetDigits(){
+  password_buffer = 0;
+  digits = 0;
+}
+
 void enter(){
   Serial.print("Enter ");
   Serial.println(password_buffer);
 
   check_password(password_buffer);
-
-  password_buffer = 0;
-  digits = 0;
+  resetDigits();
 }
 
 void keypadEvent(KeypadEvent key){
@@ -117,6 +120,7 @@ void area_detection(int distance_mm){
     lcd.clear();
     digitalWrite(green_led, LOW);
     digitalWrite(red_led, LOW);
+    resetDigits();
   }
   else {
     kpd.getKey();
