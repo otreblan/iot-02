@@ -29,11 +29,17 @@ HCSR04 hcsr04(51, 53, 20, 4000);
 LiquidCrystal lcd(21, 20, 19,18,17,16,15,14, 2,3);
 
 int password_buffer = 0;
+int digits = 0;
 int correct_password = 1234;
 
 void newDigit(int digit){
   password_buffer = password_buffer*10+digit;
   Serial.println(digit);
+
+  if(digits++ == 0)
+    lcd.clear();
+
+  lcd.print("*");
 }
 
 void check_password(int password){
@@ -59,6 +65,7 @@ void enter(){
   check_password(password_buffer);
 
   password_buffer = 0;
+  digits = 0;
 }
 
 void keypadEvent(KeypadEvent key){
