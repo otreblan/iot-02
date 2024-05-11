@@ -40,12 +40,13 @@ void check_password(int password){
   if(password == correct_password){
     digitalWrite(red_led, LOW);
     digitalWrite(green_led, HIGH);
-    // TODO: screen feedback
-    lcd.print("hello, world!");
+
+    lcd.clear();
+    lcd.print("Correcto");
   }
   else {
-    // TODO: reset screen
-    lcd.print("hello, world!");
+    lcd.clear();
+    lcd.print("Incorrecto");
     digitalWrite(green_led, LOW);
     digitalWrite(red_led, HIGH);
   }
@@ -106,6 +107,7 @@ void area_detection(int distance_mm){
   int hl = (distance_mm < 30*10) ? HIGH : LOW;
 
   if(hl == LOW){
+    lcd.clear();
     digitalWrite(green_led, LOW);
     digitalWrite(red_led, LOW);
   }
@@ -119,6 +121,8 @@ void area_detection(int distance_mm){
 
 void loop() {
   int distance = hcsr04.distanceInMillimeters();
+
+  //Serial.println(distance);
   
   area_detection(distance);
 }
