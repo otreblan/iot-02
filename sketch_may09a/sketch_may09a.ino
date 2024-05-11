@@ -39,10 +39,12 @@ void newDigit(int digit){
   if(digits++ == 0)
     lcd.clear();
 
+  lcd.blink();
   lcd.print("*");
 }
 
 void check_password(int password){
+  lcd.noBlink();
   if(password == correct_password){
     digitalWrite(red_led, LOW);
     digitalWrite(green_led, HIGH);
