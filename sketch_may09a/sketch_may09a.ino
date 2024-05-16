@@ -1,3 +1,5 @@
+#include <Servo.h>
+
 #include <LiquidCrystal.h>
 
 #include <hcsr04.h>
@@ -8,6 +10,8 @@ const int green_led = 27;
 const int yellow_led = 29;
 
 const int back_led = 39;
+
+const int servo_pin = 26;
 
 const byte ROWS = 4;
 const byte COLS = 4;
@@ -28,9 +32,24 @@ HCSR04 hcsr04(51, 53, 20, 4000);
 
 LiquidCrystal lcd(21, 20, 19,18,17,16,15,14, 2,3);
 
+unsigned long last_door_opening = 0;
+bool door_open = false;
+Servo door_servo;
+
 int password_buffer = 0;
 int digits = 0;
 int correct_password = 1234;
+
+void open_door(){
+  door_servo.write(120);
+  last_door_opening = millis();
+  door_open = true;
+}
+
+void close_door(){
+  door_servo.write(0);
+  door_open = false;
+}
 
 void newDigit(int digit){
   password_buffer = password_buffer*10+digit;
@@ -51,6 +70,7 @@ void check_password(int password){
 
     lcd.clear();
     lcd.print("Correcto");
+    open_door();
   }
   else {
     lcd.clear();
@@ -113,6 +133,8 @@ void setup() {
   kpd.addEventListener(keypadEvent);
   interrupts();
   lcd.begin(16,2);
+  door_servo.attach(servo_pin);
+  close_door();
 }
 
 void area_detection(int distance_mm){
@@ -123,6 +145,7 @@ void area_detection(int distance_mm){
     digitalWrite(green_led, LOW);
     digitalWrite(red_led, LOW);
     resetDigits();
+    close_door();
   }
   else {
     kpd.getKey();
@@ -135,7 +158,8 @@ void area_detection(int distance_mm){
 void loop() {
   int distance = hcsr04.distanceInMillimeters();
 
-  //Serial.println(distance);
-  
   area_detection(distance);
+  if(door_open && millis() >= last_door_opening+10*1000){
+    close_door();
+  }
 }
