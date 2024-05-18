@@ -1,10 +1,11 @@
 #include "plant_waterer.h"
 
-PlantWaterer::PlantWaterer(int blue_led, int red_led, int buzzer, int pump, LiquidCrystal& lcd):
+PlantWaterer::PlantWaterer(int blue_led, int red_led, int buzzer, int pump, int sensor, LiquidCrystal& lcd):
   blue_led(blue_led),
   red_led(red_led),
   buzzer(buzzer),
   pump(pump),
+  sensor(sensor),
   lcd(lcd)
 {};
 
@@ -37,7 +38,7 @@ PlantWaterer::state_t PlantWaterer::get_next_state(){
 void PlantWaterer::reset_pins(){
   digitalWrite(blue_led, LOW);
   digitalWrite(red_led, LOW);
-  digitalWrite(pump, LOW);
+  digitalWrite(pump, HIGH);
   noTone(buzzer);
   lcd.clear();
 }
@@ -53,13 +54,13 @@ void PlantWaterer::state_handler(){
   switch(current_state){
     case state_t::watering:
       digitalWrite(blue_led, HIGH);
-      digitalWrite(pump, HIGH);
+      digitalWrite(pump, LOW);
       lcd.print("Regando...");
       break;
 
     case state_t::over_hydrated:
       digitalWrite(red_led, HIGH);
-      tone(buzzer, 1000);
+      tone(buzzer, 10);
     case state_t::normal:
       print_humidity();
       break;
@@ -71,16 +72,21 @@ void PlantWaterer::state_handler(){
 }
 
 void PlantWaterer::setup() {
+  Serial.begin(9600);
   pinMode(blue_led, OUTPUT);
   pinMode(red_led, OUTPUT);
   pinMode(buzzer, OUTPUT);
   pinMode(pump, OUTPUT);
+  //pinMode(sensor, INPUT);
   
   lcd.begin(16,2);
+
+  reset_pins();
 }
 
 void PlantWaterer::loop() {
-  current_humidity = 0; // TODO: Get humidity
+  current_humidity = map(analogRead(sensor), 0, 1023, 100, 0)/100.f;
+  Serial.println(current_humidity);
   
   state_handler();
   current_state = get_next_state();

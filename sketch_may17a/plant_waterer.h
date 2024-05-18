@@ -15,6 +15,7 @@ private:
   const int red_led;
   const int buzzer;
   const int pump;
+  const int sensor;
 
   static const float low_humidity_threshold = 0.2;
   static const float high_humidity_threshold = 0.8;
@@ -30,7 +31,7 @@ private:
   void state_handler();
   
 public:
-  PlantWaterer(int blue_led, int red_led, int buzzer, int pump, LiquidCrystal& lcd);
+  PlantWaterer(int blue_led, int red_led, int buzzer, int pump, int sensor, LiquidCrystal& lcd);
   void setup();
   void loop();
 };
