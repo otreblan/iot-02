@@ -1,4 +1,6 @@
+#include <Arduino.h>
 #include <LiquidCrystal.h>
+
 #include "plant_waterer.h"
 
 const int blue_led = 31;

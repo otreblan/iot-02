@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "plant_waterer.h"
 
 PlantWaterer::PlantWaterer(int blue_led, int red_led, int buzzer, int pump, int sensor, LiquidCrystal& lcd):
@@ -28,7 +29,7 @@ PlantWaterer::state_t PlantWaterer::get_next_state(){
     case state_t::over_hydrated:
     case state_t::normal:
       return check_humidity(current_humidity);
-      
+
     case state_t::watering:
       delay(10*1000);
       return state_t::idle;
@@ -46,11 +47,11 @@ void PlantWaterer::reset_pins(){
 void PlantWaterer::print_humidity(){
   lcd.print((int)(current_humidity*100));
   lcd.print("%");
-} 
+}
 
 void PlantWaterer::state_handler(){
   reset_pins();
-  
+
   switch(current_state){
     case state_t::watering:
       digitalWrite(blue_led, HIGH);
@@ -78,7 +79,7 @@ void PlantWaterer::setup() {
   pinMode(buzzer, OUTPUT);
   pinMode(pump, OUTPUT);
   //pinMode(sensor, INPUT);
-  
+
   lcd.begin(16,2);
 
   reset_pins();
@@ -87,7 +88,7 @@ void PlantWaterer::setup() {
 void PlantWaterer::loop() {
   current_humidity = map(analogRead(sensor), 0, 1023, 100, 0)/100.f;
   Serial.println(current_humidity);
-  
+
   state_handler();
   current_state = get_next_state();
 }

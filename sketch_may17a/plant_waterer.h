@@ -17,8 +17,8 @@ private:
   const int pump;
   const int sensor;
 
-  static const float low_humidity_threshold = 0.2;
-  static const float high_humidity_threshold = 0.8;
+  static constexpr float low_humidity_threshold = 0.2;
+  static constexpr float high_humidity_threshold = 0.8;
 
   LiquidCrystal& lcd;
   float current_humidity;
@@ -29,7 +29,7 @@ private:
   void reset_pins();
   void print_humidity();
   void state_handler();
-  
+
 public:
   PlantWaterer(int blue_led, int red_led, int buzzer, int pump, int sensor, LiquidCrystal& lcd);
   void setup();
