@@ -92,3 +92,5 @@ void PlantWaterer::loop() {
   state_handler();
   current_state = get_next_state();
 }
+
+// vim: set ts=2 sts=2 sw=2 expandtab:
